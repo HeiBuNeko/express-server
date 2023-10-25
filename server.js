@@ -15,6 +15,13 @@ app.use(cors())
 //   next()
 // })
 
+app.get('/delay_3s_data', (req, res) => {
+  // 延迟响应
+  setTimeout(() => {
+    res.send({ code: 0, msg: '请求成功', data: '这是延迟3s返回的数据' })
+  }, 3000)
+})
+
 app.get('/video', (req, res) => {
   // 获取文件路径、信息、大小
   const filePath = path.join(__dirname, 'files', 'video.mp4')
