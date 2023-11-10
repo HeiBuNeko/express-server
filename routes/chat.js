@@ -25,4 +25,32 @@ router.get('/chat_typing', (req, res) => {
   }, 100)
 })
 
+// 服务器发送事件 Fetch
+router.post('/chat_typing_fetch', (req, res) => {
+  console.log('前端参数=>', req.body)
+  // 开启Server-sent events
+  res.setHeader('Content-Type', 'text/event-stream')
+
+  let index = 0
+  let timerId = 0
+
+  // 模拟每隔0.1s向前端推送一次
+  timerId = setInterval(() => {
+    const data = MYGOInfo[index]
+    index++
+    if (data) {
+      res.write(data)
+    } else {
+      res.end()
+      clearInterval(timerId)
+    }
+  }, 100)
+
+  // 断开连接
+  res.on('close', () => {
+    res.end()
+    clearInterval(timerId)
+  })
+})
+
 module.exports = router
