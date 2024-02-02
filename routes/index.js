@@ -7,6 +7,8 @@ router.use('/', require('./demo'))
 router.use('/user', require('./user'))
 // 服务器发送事件
 router.use('/chat', require('./chat'))
+// 大文件上传 分片 续传 秒传
+router.use('/upload', require('./upload'))
 
 // 处理 404 错误
 router.use('*', (req, res) => {
