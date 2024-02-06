@@ -4,18 +4,6 @@ const path = require('path')
 const multiparty = require('multiparty')
 const fs = require('fs')
 
-// 普通上传（完整Hash）
-router.post('/normal_file', async (req, res) => {
-  const form = new multiparty.Form()
-  form.parse(req, async (err, fields, files) => {
-    console.log(err, fields, files)
-  })
-  res.status(200).json({
-    code: '0000',
-    msg: '上传成功'
-  })
-})
-
 // 所有上传的文件存放到该目录下
 const UPLOAD_DIR = path.resolve(__dirname, 'uploads')
 
