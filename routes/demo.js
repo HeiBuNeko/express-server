@@ -3,7 +3,7 @@ const router = express.Router()
 const path = require('path')
 const fs = require('fs')
 
-router.use(express.static('public')) // 静态资源托管
+router.use('/public', express.static('public')) // 静态资源托管
 
 router.get('/delay_3s_data', (req, res) => {
   // 延迟响应
@@ -22,16 +22,6 @@ router.get('/video', (req, res) => {
   res.setHeader('Content-Type', 'video/mp4')
   // 创建可读流并将其管道传输到响应流中
   fs.createReadStream(filePath).pipe(res)
-})
-
-// get请求
-router.get('/', (req, res) => {
-  res.send('Hello World')
-})
-
-// post请求
-router.post('/about', (req, res) => {
-  res.send({ name: 'HeiBuNeko', age: 18 })
 })
 
 module.exports = router

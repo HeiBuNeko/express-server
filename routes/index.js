@@ -4,7 +4,7 @@ const router = express.Router()
 // 基础请求-流式传输
 router.use('/', require('./demo'))
 // 基础路由
-router.use('/user', require('./user'))
+router.use('/', require('./default'))
 // 服务器发送事件
 router.use('/chat', require('./chat'))
 // 大文件上传 分片 续传 秒传
