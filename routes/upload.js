@@ -13,7 +13,7 @@ router.post('/chunk_file', async (req, res) => {
   form.parse(req, async (err, fields, files) => {
     if (err) {
       res.status(500).json({
-        code: '9999',
+        code: '1',
         msg: '上传失败'
       })
     }
@@ -34,7 +34,7 @@ router.post('/chunk_file', async (req, res) => {
     fs.renameSync(oldPath, newPath)
 
     res.status(200).json({
-      code: '0000',
+      code: '0',
       msg: '上传成功'
     })
   })
@@ -84,7 +84,7 @@ router.post('/merge_file', async (req, res) => {
   const filePath = path.resolve(UPLOAD_DIR, `${fileHash}${extractExt(fileName)}`)
   await mergeFileChunk(filePath, fileHash, size)
   res.status(200).json({
-    code: '0000',
+    code: '0',
     msg: '合并成功'
   })
 })

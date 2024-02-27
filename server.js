@@ -1,20 +1,27 @@
 const express = require('express')
 const cors = require('cors')
-
 const app = express()
+
+// 必须在配置 CORS 之前配置 JSONP 接口
+app.get('/jsonp', (req, res) => {
+  // 1、得到函数的名称
+  const funcName = req.query.callback
+  // 2、定义要发送到客户端的数据对象
+  const data = { name: 'HeiBuNeko' }
+  // 3、拼接出一个函数的调用
+  const scriptStr = `${funcName}(${JSON.stringify(data)})`
+  // 4、把拼接的字符串，响应给客户端
+  res.send(scriptStr)
+})
 
 // CORS模块
 app.use(cors())
 
-// CORS Middleware
-// app.use((req, res, next) => {
-//   res.header("Access-Control-Allow-Origin", "*")
-//   res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE")
-//   next()
-// })
-
-// 解析请求体的 JSON 数据到 req.body
+// 注意：除了错误级别的中间件，其他的中间件必须在路由前进行配置
+// 解析请求体的 JSON 数据到 req.body，不配置则 re.body 为 undefined
 app.use(express.json())
+// 解析请求体的 url-encoded 数据到 req.body
+app.use(express.urlencoded({ extended: false }))
 
 app.use('/', require('./routes'))
 
