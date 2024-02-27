@@ -20,7 +20,7 @@ router.get('/get_default/:id', (req, res) => {
 // post请求
 router.post('/post_default', (req, res) => {
   console.log(req.body)
-  if (Object.keys(req.query).length === 0) {
+  if (Object.keys(req.body).length === 0) {
     res.send("Welcome to HeiBuNeko's blog!")
   } else {
     res.send('Your body is ' + JSON.stringify(req.body))
