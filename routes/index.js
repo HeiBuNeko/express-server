@@ -9,6 +9,8 @@ router.use('/', require('./default'))
 router.use('/chat', require('./chat'))
 // 大文件上传 分片 续传 秒传
 router.use('/upload', require('./upload'))
+// session 身份认证
+router.use('/session', require('./session'))
 
 // 处理 404 错误
 router.use('*', (req, res) => {

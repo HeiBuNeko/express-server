@@ -1,4 +1,5 @@
 const express = require('express')
+const session = require('express-session')
 const cors = require('cors')
 const app = express()
 
@@ -13,12 +14,20 @@ app.get('/jsonp', (req, res) => {
   // 4、把拼接的字符串，响应给客户端
   res.send(scriptStr)
 })
+// 配置 Session 中间件
+app.use(
+  session({
+    secret: 'heibuneko', // 密钥，加密 sessionID
+    resave: false, // 是否每次请求都重新保存 session
+    saveUninitialized: true // 是否保存未初始化的 session
+  })
+)
 
 // CORS模块
 app.use(cors())
 
 // 注意：除了错误级别的中间件，其他的中间件必须在路由前进行配置
-// 解析请求体的 JSON 数据到 req.body，不配置则 re.body 为 undefined
+// 解析请求体的 JSON 数据到 req.body，不配置则 req.body 为 undefined
 app.use(express.json())
 // 解析请求体的 url-encoded 数据到 req.body
 app.use(express.urlencoded({ extended: false }))
