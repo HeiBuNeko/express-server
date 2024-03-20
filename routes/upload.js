@@ -13,7 +13,7 @@ router.post('/chunk_file', async (req, res) => {
   form.parse(req, async (err, fields, files) => {
     if (err) {
       res.status(500).json({
-        code: '1',
+        code: 1,
         msg: '上传失败'
       })
     }
@@ -34,7 +34,7 @@ router.post('/chunk_file', async (req, res) => {
     fs.renameSync(oldPath, newPath)
 
     res.status(200).json({
-      code: '0',
+      code: 2,
       msg: '上传成功'
     })
   })
@@ -75,18 +75,61 @@ const mergeFileChunk = async (filePath, fileHash, size) => {
   )
   await Promise.all(pipeList)
   // 文件合并后删除切片临时目录
-  fs.rmdirSync(CHUNK_DIR, { recursive: true })
+  fs.rmSync(CHUNK_DIR, { recursive: true })
 }
 
-// 处理上传的分片
+// 合并切片
 router.post('/merge_file', async (req, res) => {
   const { fileHash, fileName, size } = req.body
   const filePath = path.resolve(UPLOAD_DIR, `${fileHash}${extractExt(fileName)}`)
-  await mergeFileChunk(filePath, fileHash, size)
-  res.status(200).json({
-    code: '0',
-    msg: '合并成功'
-  })
+  try {
+    await mergeFileChunk(filePath, fileHash, size)
+    res.status(200).json({
+      code: 0,
+      msg: '合并成功'
+    })
+  } catch (error) {
+    res.status(200).json({
+      code: 1,
+      msg: '合并失败'
+    })
+  }
+})
+
+// 返回已经上传的切片名
+const createUploadList = (fileHash) => {
+  try {
+    return fs.readdirSync(path.resolve(UPLOAD_DIR, fileHash))
+  } catch (error) {
+    return []
+  }
+}
+
+// 根据Hash验证文件存在
+router.post('/verify_file', async (req, res) => {
+  const { fileName, fileHash } = req.body
+  const filePath = path.resolve(UPLOAD_DIR, `${fileHash}${extractExt(fileName)}`)
+  try {
+    fs.accessSync(filePath)
+    // 文件存在服务器中，无需上传
+    res.status(200).json({
+      code: 0,
+      msg: '文件已存在',
+      data: {
+        shouldUpload: false
+      }
+    })
+  } catch (error) {
+    // 文件不在服务器中，需要上传，并返回已经存在的切片
+    res.status(200).json({
+      code: 0,
+      msg: '文件不存在',
+      data: {
+        shouldUpload: true,
+        uploadedList: createUploadList(fileHash)
+      }
+    })
+  }
 })
 
 module.exports = router

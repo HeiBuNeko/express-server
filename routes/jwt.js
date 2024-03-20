@@ -10,7 +10,7 @@ router.post('/login', (req, res) => {
   if (req.body.name === 'heibuneko' && req.body.password === 'heibuneko') {
     // jwt.sign() 1-用户信息 2-密钥 3-配置项
     console.log(req.body);
-    const tokenStr = jwt.sign({ name: req.body.name }, secretKey, { expiresIn: '30s' })
+    const tokenStr = jwt.sign({ name: req.body.name }, secretKey, { expiresIn: '7d' })
     res.send({
       code: 0,
       msg: '登录成功',
